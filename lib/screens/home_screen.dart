@@ -14,7 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         backgroundColor: Colors.amber,
         title: const Text(
-          "Permission Handler",
+          "Location Permission",
         ),
         centerTitle: true,
       ),

@@ -6,7 +6,7 @@ class LocationService {
   static final _location = Location();
   static LocationData? currentLocation;
 
-  static void init() async {
+  static Future<void> init() async {
     await _checkService();
     await _checkPermission();
   }

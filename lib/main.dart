@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:location_permisson/screens/home_screen.dart';
+import 'package:location_permisson/services/location_service.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main(List<String> args) async {
@@ -28,6 +29,8 @@ void main(List<String> args) async {
 
   //   print(statuses);
   // }
+
+  await LocationService.init();
   runApp(PermissonApp());
 }
 
