@@ -8,27 +8,27 @@ void main(List<String> args) async {
   WidgetsFlutterBinding
       .ensureInitialized(); // widgetlar tayyorligiga ishonch hosil qiladi
 
-  // PermissionStatus cameraPermission = await Permission.camera.status;
-  // PermissionStatus locationPermission = await Permission.location.status;
+  PermissionStatus cameraPermission = await Permission.camera.status;
+  PermissionStatus locationPermission = await Permission.location.status;
 
-  // print(cameraPermission);
-  // print(locationPermission);
+  print(cameraPermission);
+  print(locationPermission);
 
-  // if (cameraPermission != PermissionStatus.granted) {
-  //   await Permission.camera.request();
-  // }
-  // if (locationPermission != PermissionStatus.granted) {
-  //   await Permission.location.request();
-  // }
-  // if (!(await Permission.camera.request().isGranted) ||
-  //     !(await Permission.camera.request().isGranted)) {
-  //   Map<Permission, PermissionStatus> statuses = await [
-  //     Permission.location,
-  //     Permission.camera,
-  //   ].request();
+  if (cameraPermission != PermissionStatus.granted) {
+    await Permission.camera.request();
+  }
+  if (locationPermission != PermissionStatus.granted) {
+    await Permission.location.request();
+  }
+  if (!(await Permission.camera.request().isGranted) ||
+      !(await Permission.camera.request().isGranted)) {
+    Map<Permission, PermissionStatus> statuses = await [
+      Permission.location,
+      Permission.camera,
+    ].request();
 
-  //   print(statuses);
-  // }
+    print(statuses);
+  }
 
   await LocationService.init();
   runApp(PermissonApp());

@@ -14,6 +14,7 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     Future.delayed(Duration.zero, () async {
       await LocationService.getCurrentLocation();
+      setState(() {});
     });
   }
 
@@ -29,10 +30,8 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         centerTitle: true,
       ),
-      body: const Center(
-        child: FlutterLogo(
-          size: 250,
-        ),
+      body: Center(
+        child: Text(myLocation.toString()),
       ),
     );
   }
