@@ -32,7 +32,7 @@ class LocationService {
     }
   }
 
-  static Future<void> _getCurrentLocation() async {
+  static Future<void> getCurrentLocation() async {
     if (_isServiceEnabled && permissionStatus == PermissionStatus.granted) {
       currentLocation = await _location.getLocation();
     }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:location_permisson/services/location_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -9,7 +10,17 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   @override
+  void initState() {
+    super.initState();
+    Future.delayed(Duration.zero, () async {
+      await LocationService.getCurrentLocation();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final myLocation = LocationService.currentLocation;
+    print(myLocation);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.amber,
