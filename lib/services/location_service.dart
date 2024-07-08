@@ -1,23 +1,28 @@
 import 'package:location/location.dart';
 
 class LocationService {
-  static bool isServiceEnabled = false;
+  static bool _isServiceEnabled = false;
   static PermissionStatus permissionStatus = PermissionStatus.denied;
   static final _location = Location();
   static LocationData? currentLocation;
 
-// joylashuvni olish xizmati yoqilganmi tekshiramiz
-  static void checkService() async {
-    bool isServiceEnabled = await _location.serviceEnabled();
+  static void init() async {
+    await _checkService();
+    await _checkPermission();
+  }
 
-    if (!isServiceEnabled) {
-      isServiceEnabled = await _location.serviceEnabled();
+// joylashuvni olish xizmati yoqilganmi tekshiramiz
+  static Future<void> _checkService() async {
+    _isServiceEnabled = await _location.serviceEnabled();
+
+    if (!_isServiceEnabled) {
+      _isServiceEnabled = await _location.serviceEnabled();
       return;
     }
   }
 // joylashuvni olish uchun ruxsat berilganmi tekshiramiz
 
-  static void checkPermission() async {
+  static Future<void> _checkPermission() async {
     permissionStatus = await _location.hasPermission();
     if (permissionStatus == PermissionStatus.denied) {
       permissionStatus = await _location.requestPermission();
@@ -27,8 +32,8 @@ class LocationService {
     }
   }
 
-  static void getCurrentLocation() async {
-    if (isServiceEnabled && permissionStatus == PermissionStatus.granted) {
+  static Future<void> _getCurrentLocation() async {
+    if (_isServiceEnabled && permissionStatus == PermissionStatus.granted) {
       currentLocation = await _location.getLocation();
     }
   }
