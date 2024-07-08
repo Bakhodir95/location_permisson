@@ -3,6 +3,7 @@ import 'package:location_permisson/screens/home_screen.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 void main(List<String> args) async {
+//? https://pub.dev/packages/permission_handler  Access to other Permissions (link)
   WidgetsFlutterBinding
       .ensureInitialized(); // widgetlar tayyorligiga ishonch hosil qiladi
 
