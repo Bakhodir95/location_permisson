@@ -13,11 +13,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  LatLng? selected;
   late GoogleMapController mapController;
   final LatLng _najotTalim = const LatLng(41.2856806, 69.2034646);
   final _controller = TextEditingController();
-  LatLng myCurrentPosition = const LatLng(41.2856806, 69.2034646);
-  Set<Marker> myMarkers = {};
+  LatLng myCurrentPosition = LatLng(41.345, 69.34567);
   Set<Polyline> polylines = {};
   List<LatLng> myPositions = [];
 
@@ -29,7 +29,10 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
     Future.delayed(Duration.zero, () async {
-      await LocationService.getCurrentLocation();
+      await GooleMapService.getCurrentLocation();
+      print(GooleMapService.currentLocation!.latitude!);
+      myCurrentPosition = LatLng(GooleMapService.currentLocation!.latitude!,
+          GooleMapService.currentLocation!.longitude!);
       setState(() {});
     });
   }
@@ -46,60 +49,31 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
-  void addLocationMarker(Prediction prediction) {
-    myMarkers.add(
-      Marker(
-        markerId: MarkerId(myMarkers.length.toString()),
-        position: myCurrentPosition,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-      ),
-    );
-    myPositions.add(myCurrentPosition);
-    if (myPositions.length == 2) {
-      GooleMapService.fetchPolylinePoints(
-        myPositions[0],
-        myPositions[1],
-      ).then((List<LatLng> positions) {
-        polylines.add(
-          Polyline(
-            polylineId: PolylineId(UniqueKey().toString()),
-            color: Colors.blue,
-            width: 5,
-            points: positions,
-          ),
-        );
-      });
+  void addLocationMarker() {
+    if (selected == null) {
+      return; // Handle case where selected is null
     }
-  }
 
-  void addLocationMarker2() {
-    myMarkers.add(
-      Marker(
-        markerId: MarkerId(myMarkers.length.toString()),
-        position: myCurrentPosition,
-        icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange),
-      ),
-    );
+    GooleMapService.fetchPolylinePoints(
+      myCurrentPosition,
+      selected!,
+    ).then((List<LatLng> positions) {
+      polylines.add(
+        Polyline(
+          polylineId: PolylineId(UniqueKey().toString()),
+          color: Colors.blue,
+          width: 5,
+          points: positions,
+        ),
+      );
 
-    myPositions.add(myCurrentPosition);
-
-    if (myPositions.length == 2) {
-      GooleMapService.fetchPolylinePoints(
-        myPositions[0],
-        myPositions[1],
-      ).then((List<LatLng> positions) {
-        polylines.add(
-          Polyline(
-            polylineId: PolylineId(UniqueKey().toString()),
-            color: Colors.blue,
-            width: 5,
-            points: positions,
-          ),
-        );
-
-        // setState(() {});
+      setState(() {
+        // Update UI after adding polyline
       });
-    }
+    }).catchError((error) {
+      print('Error fetching polyline points: $error');
+      // Handle error if necessary
+    });
   }
 
   MapType currentModeType = MapType.normal;
@@ -110,10 +84,16 @@ class _HomeScreenState extends State<HomeScreen> {
     MapType.terrain,
     MapType.none,
   ];
+  MapType currentTravel = MapType.normal;
+  List<MapType> travelType = [
+    MapType.hybrid,
+    MapType.normal,
+    MapType.satellite,
+    MapType.terrain,
+    MapType.none,
+  ];
   @override
   Widget build(BuildContext context) {
-    final myLocation = GooleMapService.currentLocation;
-    print(myLocation);
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.blue,
@@ -156,6 +136,11 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Stack(
               children: <Widget>[
                 GoogleMap(
+                  onLongPress: (argument) {
+                    selected = argument;
+                    addLocationMarker();
+                    setState(() {});
+                  },
                   zoomControlsEnabled: false,
                   onCameraMove: onCameraMove,
                   buildingsEnabled: true,
@@ -178,15 +163,19 @@ class _HomeScreenState extends State<HomeScreen> {
                         snippet: "Xush kelibsiz Qirg'inbarot yurtga",
                       ),
                     ),
-                    Marker(
-                      markerId: const MarkerId("myCurrentPosition"),
-                      icon: BitmapDescriptor.defaultMarkerWithHue(
-                        BitmapDescriptor.hueBlue,
+                    if (selected != null)
+                      Marker(
+                        onTap: () {},
+                        markerId: const MarkerId("myCurrentPosition"),
+                        icon: BitmapDescriptor.defaultMarkerWithHue(
+                          BitmapDescriptor.hueBlue,
+                        ),
+                        position: selected!,
+                        infoWindow: const InfoWindow(
+                          title: "Najot talim",
+                          snippet: "Xush kelibsiz Qirg'inbarot yurtga",
+                        ),
                       ),
-                      position: myCurrentPosition,
-                      infoWindow: const InfoWindow(),
-                    ),
-                    ...myMarkers,
                   },
                   polylines: polylines,
                 ),
@@ -209,7 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       getPlaceDetailWithLatLng: (prediction) {
                         print(
                             "Coordinates: (${prediction.lat},${prediction.lng})");
-                        addLocationMarker(prediction);
+                        // addLocationMarker(prediction);
                         mapController
                             .moveCamera(
                           CameraUpdate.newLatLng(
@@ -221,7 +210,12 @@ class _HomeScreenState extends State<HomeScreen> {
                           setState(() {});
                         });
                       },
-                      itmClick: addLocationMarker,
+                      itmClick: (prediction) {
+                        _controller.text = prediction.description!;
+                        _controller.selection = TextSelection.fromPosition(
+                          TextPosition(offset: prediction.description!.length),
+                        );
+                      },
                     ),
                   ),
                 ),
@@ -262,10 +256,6 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-      ),
-      floatingActionButton: const FloatingActionButton(
-        onPressed: GooleMapService.getCurrentLocation,
-        child: Icon(Icons.add),
       ),
     );
   }

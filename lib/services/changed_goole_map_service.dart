@@ -46,6 +46,7 @@ class GooleMapService {
 
   // hozirgi joylashuvni olamiz
   static Future<void> getCurrentLocation() async {
+    print(_permissionStatus);
     if (_isServiceEnabled && _permissionStatus == PermissionStatus.granted) {
       currentLocation = await _location.getLocation();
     }
@@ -66,7 +67,7 @@ class GooleMapService {
       request: PolylineRequest(
         origin: PointLatLng(from.latitude, from.longitude),
         destination: PointLatLng(to.latitude, to.longitude),
-        mode: TravelMode.transit,
+        mode: TravelMode.driving,
       ),
     );
 
