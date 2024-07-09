@@ -12,7 +12,7 @@
         android:label="location_permisson"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
-         <meta-data android:name="com.google.android.geo.API_KEY"
+        <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="AIzaSyBmAEoDBWinPjWRfzIgOHolkni8_wSu7_o"/>
         <activity
             android:name=".MainActivity"
