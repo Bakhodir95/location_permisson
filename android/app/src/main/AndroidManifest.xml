@@ -12,6 +12,8 @@
         android:label="location_permisson"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
+         <meta-data android:name="com.google.android.geo.API_KEY"
+               android:value="AIzaSyBmAEoDBWinPjWRfzIgOHolkni8_wSu7_o"/>
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -33,6 +35,8 @@
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+           
+
         </activity>
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
