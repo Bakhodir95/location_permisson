@@ -51,13 +51,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void addLocationMarker() {
     if (selected == null) {
-      return; // Handle case where selected is null
+      return;
     }
 
     GooleMapService.fetchPolylinePoints(
       myCurrentPosition,
       selected!,
     ).then((List<LatLng> positions) {
+      polylines = {};
       polylines.add(
         Polyline(
           polylineId: PolylineId(UniqueKey().toString()),
@@ -67,12 +68,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       );
 
-      setState(() {
-        // Update UI after adding polyline
-      });
+      setState(() {});
     }).catchError((error) {
       print('Error fetching polyline points: $error');
-      // Handle error if necessary
     });
   }
 
@@ -84,14 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
     MapType.terrain,
     MapType.none,
   ];
-  MapType currentTravel = MapType.normal;
-  List<MapType> travelType = [
-    MapType.hybrid,
-    MapType.normal,
-    MapType.satellite,
-    MapType.terrain,
-    MapType.none,
-  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: BitmapDescriptor.defaultMarker,
                       position: _najotTalim,
                       infoWindow: const InfoWindow(
-                        title: "Najot talim",
+                        title: "",
                         snippet: "Xush kelibsiz Qirg'inbarot yurtga",
                       ),
                     ),
@@ -172,8 +163,8 @@ class _HomeScreenState extends State<HomeScreen> {
                         ),
                         position: selected!,
                         infoWindow: const InfoWindow(
-                          title: "Najot talim",
-                          snippet: "Xush kelibsiz Qirg'inbarot yurtga",
+                          title: "Najot ta'lim",
+                          snippet: "Xush kelibsiz IT yurtga",
                         ),
                       ),
                   },

@@ -72,7 +72,7 @@ class GooleMapService {
     );
 
     if (result.points.isNotEmpty) {
-      return result.alternatives
+      return result.points
           .map((point) => LatLng(point.latitude, point.longitude))
           .toList();
     }
